@@ -12,10 +12,13 @@
 
     <modules>
         <module>lettuce-sample</module>
+        <module>distribute-lock-client</module>
     </modules>
 
     <properties>
         <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.boot.version>2.5.0</spring.boot.version>
@@ -42,6 +45,11 @@
             <dependency>
                 <groupId>io.github.weipeng2k</groupId>
                 <artifactId>lettuce-sample</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
