@@ -8,15 +8,17 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <description>分布式锁客户端</description>
+    <description>分布式锁扩展SPI</description>
 
-    <artifactId>distribute-lock-client</artifactId>
-    <name>distribute-lock-client</name>
+    <artifactId>distribute-lock-spi</artifactId>
+    <name>distribute-lock-spi</name>
 
     <dependencies>
         <dependency>
-            <groupId>io.github.weipeng2k</groupId>
-            <artifactId>distribute-lock-spi</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

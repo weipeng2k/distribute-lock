@@ -13,6 +13,7 @@
     <modules>
         <module>lettuce-sample</module>
         <module>distribute-lock-client</module>
+        <module>distribute-lock-spi</module>
     </modules>
 
     <properties>
@@ -50,6 +51,11 @@
             <dependency>
                 <groupId>io.github.weipeng2k</groupId>
                 <artifactId>distribute-lock-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
