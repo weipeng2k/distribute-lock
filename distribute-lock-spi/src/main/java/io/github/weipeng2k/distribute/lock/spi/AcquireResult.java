@@ -44,9 +44,21 @@ public interface AcquireResult {
 
     Optional<Throwable> getException();
 
+    /**
+     * 获取锁失败类型
+     */
     enum FailureType {
+        /**
+         * 超时
+         */
         TIME_OUT,
+        /**
+         * 异常
+         */
         EXCEPTION,
+        /**
+         * 自定义
+         */
         CUSTOM
     }
 }

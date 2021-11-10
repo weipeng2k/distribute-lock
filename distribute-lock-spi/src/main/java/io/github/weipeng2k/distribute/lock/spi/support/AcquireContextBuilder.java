@@ -9,8 +9,13 @@ import java.util.concurrent.TimeUnit;
  */
 public final class AcquireContextBuilder {
 
+    /**
+     * 资源名称
+     */
     private final String resourceName;
-
+    /**
+     * 资源值
+     */
     private final String resourceValue;
 
     private long startNanoTime;
@@ -28,6 +33,9 @@ public final class AcquireContextBuilder {
     }
 
     public AcquireContextBuilder timeout(long time, TimeUnit timeUnit) {
+        if (startNanoTime == 0) {
+            throw new IllegalStateException("startNanoTime is not set.");
+        }
         endNanoTime = startNanoTime + timeUnit.toNanos(time);
         return this;
     }
