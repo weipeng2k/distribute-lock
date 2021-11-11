@@ -7,8 +7,10 @@ public interface LockHandler {
 
     /**
      * <pre>
-     * 获取锁资源的处理逻辑，实现该方法不能抛出异常
+     * 获取锁资源的处理逻辑
      *
+     * 实现该方法时，如果是可期望的异常，尽量需要自行捕获
+     * 如果抛出异常，将会使异常抵达客户端调用处
      * </pre>
      *
      * @param acquireContext 获取上下文
@@ -29,9 +31,13 @@ public interface LockHandler {
 
     interface AcquireChain {
         AcquireResult invoke(AcquireContext acquireContext);
+
+        int getAcquireCurrentIndex();
     }
 
     interface ReleaseChain {
         void invoke(ReleaseContext releaseContext);
+
+        int getReleaseCurrentIndex();
     }
 }

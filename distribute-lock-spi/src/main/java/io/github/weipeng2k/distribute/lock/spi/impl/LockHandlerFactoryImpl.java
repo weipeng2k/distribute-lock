@@ -9,6 +9,7 @@ import io.github.weipeng2k.distribute.lock.spi.ReleaseContext;
 import io.github.weipeng2k.distribute.lock.spi.support.AcquireResultBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,26 +23,28 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
 
     private final List<LockHandler> handlers;
 
-    private final int headIndex;
+    private final LockHandler head;
 
-    private final int tailIndex;
+    private final LockHandler tail;
 
     public LockHandlerFactoryImpl(List<LockHandler> lockHandlerList, LockRemoteResource lockRemoteResource) {
-        handlers = new ArrayList<>(lockHandlerList);
-        handlers.add(new TailLockHandler(lockRemoteResource));
-        headIndex = 0;
-        tailIndex = handlers.size() - 1;
+        LinkedList<LockHandler> temp = new LinkedList<>(lockHandlerList);
+        head = new HeadLockHandler();
+        tail = new TailLockHandler(lockRemoteResource);
+        temp.addFirst(head);
+        temp.addLast(tail);
+        handlers = new ArrayList<>(temp);
         HANDLER_CHAIN_THREAD_LOCAL = ThreadLocal.withInitial(() -> new Chain(handlers));
     }
 
     @Override
     public LockHandler getHead() {
-        return handlers.get(headIndex);
+        return head;
     }
 
     @Override
     public LockHandler getTail() {
-        return handlers.get(tailIndex);
+        return tail;
     }
 
     @Override
@@ -65,6 +68,19 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
         return handlers;
     }
 
+    private static class HeadLockHandler implements LockHandler {
+
+        @Override
+        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+            return acquireChain.invoke(acquireContext);
+        }
+
+        @Override
+        public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
+
+        }
+    }
+
     private static class TailLockHandler implements LockHandler {
 
         private final LockRemoteResource lockRemoteResource;
@@ -81,12 +97,8 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
                     return lockRemoteResource.tryAcquire(acquireContext.getResourceName(),
                             acquireContext.getResourceValue(), waitTime, TimeUnit.NANOSECONDS);
                 } catch (Throwable ex) {
-                    AcquireResultBuilder acquireResultBuilder = new AcquireResultBuilder(false);
-                    return acquireResultBuilder
-                            .failureType(AcquireResult.FailureType.EXCEPTION)
-                            .failureMessage("acquire lock remote resource got exception")
-                            .exception(ex)
-                            .build();
+                    throw new RuntimeException(
+                            "acquire lock remote resource:" + acquireContext.getResourceName() + " got exception", ex);
                 }
             } else {
                 AcquireResultBuilder acquireResultBuilder = new AcquireResultBuilder(false);
@@ -98,7 +110,13 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
 
         @Override
         public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
-            releaseChain.invoke(releaseContext);
+            try {
+                lockRemoteResource.release(releaseContext.getResourceName(), releaseContext.getResourceValue());
+                releaseChain.invoke(releaseContext);
+            } catch (Throwable ex) {
+                throw new RuntimeException(
+                        "release lock remote resource:" + releaseContext.getResourceName() + " got exception", ex);
+            }
         }
     }
 

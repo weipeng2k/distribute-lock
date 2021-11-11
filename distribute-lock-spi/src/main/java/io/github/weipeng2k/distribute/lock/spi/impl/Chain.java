@@ -44,8 +44,15 @@ final class Chain implements LockHandler.AcquireChain, LockHandler.ReleaseChain 
         forwardIdx++;
         if (forwardIdx < handlerList.size()) {
             return handlerList.get(forwardIdx).acquire(acquireContext, this);
+        } else {
+            forwardIdx = handlerList.size() - 1;
         }
         return null;
+    }
+
+    @Override
+    public int getAcquireCurrentIndex() {
+        return forwardIdx;
     }
 
     @Override
@@ -53,6 +60,13 @@ final class Chain implements LockHandler.AcquireChain, LockHandler.ReleaseChain 
         backwardIdx--;
         if (backwardIdx >= 0) {
             handlerList.get(backwardIdx).release(releaseContext, this);
+        } else {
+            backwardIdx = 0;
         }
+    }
+
+    @Override
+    public int getReleaseCurrentIndex() {
+        return backwardIdx;
     }
 }

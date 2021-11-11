@@ -4,7 +4,6 @@ import io.github.weipeng2k.distribute.lock.spi.AcquireContext;
 import io.github.weipeng2k.distribute.lock.spi.AcquireResult;
 import io.github.weipeng2k.distribute.lock.spi.LockHandler;
 import io.github.weipeng2k.distribute.lock.spi.ReleaseContext;
-import io.github.weipeng2k.distribute.lock.spi.impl.Chain;
 import io.github.weipeng2k.distribute.lock.spi.support.AcquireContextBuilder;
 import io.github.weipeng2k.distribute.lock.spi.support.AcquireResultBuilder;
 import io.github.weipeng2k.distribute.lock.spi.support.ReleaseContextBuilder;
@@ -44,6 +43,73 @@ public class ChainTest {
         AcquireResult acquireResult = lockHandler.acquire(acquireContext, chain);
         System.out.println(acquireResult);
         Assert.assertTrue(acquireResult.isSuccess());
+        System.out.println(chain.getAcquireCurrentIndex());
+    }
+
+    @Test
+    public void exception() {
+        AcquireContextBuilder acquireContextBuilder = new AcquireContextBuilder("R", "V");
+        AcquireContext acquireContext = acquireContextBuilder
+                .start(System.nanoTime())
+                .timeout(3, TimeUnit.SECONDS)
+                .build();
+        List<LockHandler> handlerList = new ArrayList<>();
+        handlerList.add(new TestHandler("T1"));
+        handlerList.add(new TestHandler("T2"));
+        handlerList.add(new LockHandler() {
+            @Override
+            public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+                throw new RuntimeException();
+            }
+
+            @Override
+            public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
+
+            }
+        });
+        handlerList.add(new TestHandler("T4"));
+
+        Chain chain = new Chain(handlerList);
+        LockHandler lockHandler = handlerList.get(0);
+        try {
+            lockHandler.acquire(acquireContext, chain);
+        } catch (Exception ex) {
+            // Ignore.
+        }
+
+        Assert.assertEquals(2, chain.getAcquireCurrentIndex());
+    }
+
+    @Test
+    public void releaseException() {
+        ReleaseContextBuilder releaseContextBuilder = new ReleaseContextBuilder("R", "V");
+        ReleaseContext releaseContext = releaseContextBuilder
+                .build();
+        List<LockHandler> handlerList = new ArrayList<>();
+        handlerList.add(new TestHandler("T1"));
+        handlerList.add(new TestHandler("T2"));
+        handlerList.add(new LockHandler() {
+            @Override
+            public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+                throw new RuntimeException();
+            }
+
+            @Override
+            public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
+                throw new RuntimeException();
+            }
+        });
+        handlerList.add(new TestHandler("T4"));
+
+        Chain chain = new Chain(handlerList);
+        LockHandler lockHandler = handlerList.get(3);
+        try {
+            lockHandler.release(releaseContext, chain);
+        } catch (Exception ex) {
+            // Ignore.
+        }
+
+        Assert.assertEquals(2, chain.getReleaseCurrentIndex());
     }
 
     @Test
@@ -87,7 +153,7 @@ public class ChainTest {
 
         @Override
         public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
-            System.out.println("TailHandler in, get context " + acquireContext);
+            System.out.println("TailHandler in, got context " + acquireContext);
             try {
                 return new AcquireResultBuilder(true).build();
             } finally {
@@ -97,11 +163,10 @@ public class ChainTest {
 
         @Override
         public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
-            System.out.println("TailHandler release, get context " + releaseContext);
+            System.out.println("TailHandler release, got context " + releaseContext);
             releaseChain.invoke(releaseContext);
             System.out.println("TailHandler release out");
         }
     }
-
 
 }

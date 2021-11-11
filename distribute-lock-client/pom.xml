@@ -18,5 +18,10 @@
             <groupId>io.github.weipeng2k</groupId>
             <artifactId>distribute-lock-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
