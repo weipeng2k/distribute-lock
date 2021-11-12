@@ -2,6 +2,7 @@ package io.github.weipeng2k.distribute.lock.spi.impl;
 
 import io.github.weipeng2k.distribute.lock.spi.AcquireContext;
 import io.github.weipeng2k.distribute.lock.spi.AcquireResult;
+import io.github.weipeng2k.distribute.lock.spi.ErrorAware;
 import io.github.weipeng2k.distribute.lock.spi.LockHandler;
 import io.github.weipeng2k.distribute.lock.spi.ReleaseContext;
 import io.github.weipeng2k.distribute.lock.spi.support.AcquireContextBuilder;
@@ -123,7 +124,7 @@ public class ChainTest {
         lockHandler.release(releaseContext, chain);
     }
 
-    static class TestHandler implements LockHandler {
+    static class TestHandler implements LockHandler, ErrorAware {
 
         private final String name;
 
@@ -146,6 +147,16 @@ public class ChainTest {
             System.out.println("Enter " + name + ", before release");
             releaseChain.invoke(releaseContext);
             System.out.println("Leave " + name + ", after release");
+        }
+
+        @Override
+        public void onAcquireError(AcquireContext acquireContext, Throwable throwable) {
+            System.out.println("onAcquireError on " + name + ". ex=" + throwable);
+        }
+
+        @Override
+        public void onReleaseError(ReleaseContext releaseContext, Throwable throwable) {
+            System.out.println("onReleaseError on " + name + ". ex=" + throwable);
         }
     }
 

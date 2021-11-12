@@ -2,6 +2,7 @@ package io.github.weipeng2k.distribute.lock.client.impl;
 
 import io.github.weipeng2k.distribute.lock.spi.AcquireContext;
 import io.github.weipeng2k.distribute.lock.spi.AcquireResult;
+import io.github.weipeng2k.distribute.lock.spi.ErrorAware;
 import io.github.weipeng2k.distribute.lock.spi.LockHandler;
 import io.github.weipeng2k.distribute.lock.spi.LockHandlerFactory;
 import io.github.weipeng2k.distribute.lock.spi.LockRemoteResource;
@@ -10,7 +11,6 @@ import io.github.weipeng2k.distribute.lock.spi.impl.LockHandlerFactoryImpl;
 import io.github.weipeng2k.distribute.lock.spi.support.AcquireResultBuilder;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
@@ -58,7 +58,7 @@ public class DistributeLockImplTest {
     }
 
     @Test
-    public void tryLock() throws Exception{
+    public void tryLock() throws Exception {
         // 1st can get the lock
         Assert.assertTrue(distributeLock.tryLock(3, TimeUnit.SECONDS));
 
@@ -119,7 +119,95 @@ public class DistributeLockImplTest {
     public void unlock() {
     }
 
-    static class TestHandler implements LockHandler {
+    @Test(expected = RuntimeException.class)
+    public void exceptionAcquire() {
+        LockHandlerFactory lockHandlerFactory = new LockHandlerFactoryImpl(
+                List.of(new TestHandler("1"), new TestHandler("2"), new LockHandler() {
+                    @Override
+                    public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+                        throw new RuntimeException();
+                    }
+
+                    @Override
+                    public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
+                    }
+                }),
+                new LockRemoteResource() {
+
+                    final Lock lock = new ReentrantLock();
+
+                    @Override
+                    public AcquireResult tryAcquire(String resourceName, String resourceValue, long waitTime,
+                                                    TimeUnit timeUnit) {
+                        boolean result = false;
+                        try {
+                            System.err.println(Thread.currentThread() + "start@" + new Date());
+                            result = lock.tryLock(waitTime, timeUnit);
+                            System.err.println(Thread.currentThread() + "end@" + new Date());
+                        } catch (Exception ex) {
+                            // Ignore.
+                        }
+                        AcquireResultBuilder acquireResultBuilder = new AcquireResultBuilder(result);
+                        return acquireResultBuilder.build();
+                    }
+
+                    @Override
+                    public void release(String resourceName, String resourceValue) {
+                        lock.unlock();
+                    }
+                });
+        distributeLock = new DistributeLockImpl("x", "y", lockHandlerFactory);
+
+
+        distributeLock.tryLock(3, TimeUnit.SECONDS);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void exceptionRelease() {
+        LockHandlerFactory lockHandlerFactory = new LockHandlerFactoryImpl(
+                List.of(new TestHandler("1"), new TestHandler("2"), new LockHandler() {
+                    @Override
+                    public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+                        return acquireChain.invoke(acquireContext);
+                    }
+
+                    @Override
+                    public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
+                        throw new RuntimeException();
+                    }
+                }, new TestHandler("4")),
+                new LockRemoteResource() {
+
+                    final Lock lock = new ReentrantLock();
+
+                    @Override
+                    public AcquireResult tryAcquire(String resourceName, String resourceValue, long waitTime,
+                                                    TimeUnit timeUnit) {
+                        boolean result = false;
+                        try {
+                            System.err.println(Thread.currentThread() + "start@" + new Date());
+                            result = lock.tryLock(waitTime, timeUnit);
+                            System.err.println(Thread.currentThread() + "end@" + new Date());
+                        } catch (Exception ex) {
+                            // Ignore.
+                        }
+                        AcquireResultBuilder acquireResultBuilder = new AcquireResultBuilder(result);
+                        return acquireResultBuilder.build();
+                    }
+
+                    @Override
+                    public void release(String resourceName, String resourceValue) {
+                        lock.unlock();
+                    }
+                });
+        distributeLock = new DistributeLockImpl("x", "y", lockHandlerFactory);
+
+
+        Assert.assertTrue(distributeLock.tryLock(3, TimeUnit.SECONDS));
+        distributeLock.unlock();
+    }
+
+    static class TestHandler implements LockHandler, ErrorAware {
 
         private final String name;
 
@@ -133,15 +221,25 @@ public class DistributeLockImplTest {
             try {
                 return acquireChain.invoke(acquireContext);
             } finally {
-                System.out.println(Thread.currentThread() + "Leave " + name + ", after acquire@"+ new Date());
+                System.out.println(Thread.currentThread() + "Leave " + name + ", after acquire@" + new Date());
             }
         }
 
         @Override
         public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
-            System.out.println(Thread.currentThread() + "Enter " + name + ", before release@"+ new Date());
+            System.out.println(Thread.currentThread() + "Enter " + name + ", before release@" + new Date());
             releaseChain.invoke(releaseContext);
-            System.out.println(Thread.currentThread() + "Leave " + name + ", after release@"+ new Date());
+            System.out.println(Thread.currentThread() + "Leave " + name + ", after release@" + new Date());
+        }
+
+        @Override
+        public void onAcquireError(AcquireContext acquireContext, Throwable throwable) {
+            System.out.println("onAcquireError on " + name + ". ex=" + throwable);
+        }
+
+        @Override
+        public void onReleaseError(ReleaseContext releaseContext, Throwable throwable) {
+            System.out.println("onReleaseError on " + name + ". ex=" + throwable);
         }
     }
 }

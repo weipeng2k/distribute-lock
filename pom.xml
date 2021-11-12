@@ -11,9 +11,9 @@
     <description>简单的分布式锁以及示例</description>
 
     <modules>
-        <module>lettuce-sample</module>
         <module>distribute-lock-client</module>
         <module>distribute-lock-spi</module>
+        <module>distribute-lock-support</module>
     </modules>
 
     <properties>
@@ -43,11 +43,6 @@
             </dependency>
 
             <!-- Self Projects-->
-            <dependency>
-                <groupId>io.github.weipeng2k</groupId>
-                <artifactId>lettuce-sample</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>io.github.weipeng2k</groupId>
                 <artifactId>distribute-lock-client</artifactId>
