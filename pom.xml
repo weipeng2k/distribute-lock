@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.weipeng2k</groupId>
     <artifactId>distribute-lock</artifactId>
@@ -15,6 +16,7 @@
         <module>distribute-lock-spi</module>
         <module>distribute-lock-support</module>
         <module>distribute-lock-classic</module>
+        <module>distribute-lock-testsuite</module>
     </modules>
 
     <properties>
@@ -25,6 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.boot.version>2.5.0</spring.boot.version>
         <redisson.version>3.16.4</redisson.version>
+        <curator-recipes.version>5.2.0</curator-recipes.version>
     </properties>
 
     <dependencyManagement>
@@ -48,6 +51,11 @@
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator-recipes.version}</version>
+            </dependency>
 
 
             <!-- Self Projects-->
@@ -59,6 +67,31 @@
             <dependency>
                 <groupId>io.github.weipeng2k</groupId>
                 <artifactId>distribute-lock-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-classic</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-test-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-redis-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-redlock-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-zookeeper-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

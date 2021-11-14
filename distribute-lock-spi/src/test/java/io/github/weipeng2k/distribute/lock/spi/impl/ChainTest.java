@@ -32,7 +32,7 @@ public class ChainTest {
     }
 
     @Test
-    public void acquire() {
+    public void acquire() throws Exception {
         AcquireContextBuilder acquireContextBuilder = new AcquireContextBuilder("R", "V");
         AcquireContext acquireContext = acquireContextBuilder
                 .start(System.nanoTime())
@@ -133,7 +133,7 @@ public class ChainTest {
         }
 
         @Override
-        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) throws InterruptedException {
             System.out.println("Enter " + name + ", before acquire");
             try {
                 return acquireChain.invoke(acquireContext);

@@ -17,7 +17,7 @@ public interface LockHandler {
      * @param acquireChain   chain
      * @return 获取结果
      */
-    AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain);
+    AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) throws InterruptedException;
 
     /**
      * <pre>
@@ -30,7 +30,7 @@ public interface LockHandler {
     void release(ReleaseContext releaseContext, ReleaseChain releaseChain);
 
     interface AcquireChain {
-        AcquireResult invoke(AcquireContext acquireContext);
+        AcquireResult invoke(AcquireContext acquireContext) throws InterruptedException;
 
         int getAcquireCurrentIndex();
     }

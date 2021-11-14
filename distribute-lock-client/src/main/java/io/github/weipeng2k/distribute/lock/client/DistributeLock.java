@@ -25,7 +25,7 @@ public interface DistributeLock {
      * @param unit     时间单位
      * @return 是否锁定成功，如果返回false表示锁定失败
      */
-    boolean tryLock(long waitTime, TimeUnit unit);
+    boolean tryLock(long waitTime, TimeUnit unit) throws InterruptedException;
 
     /**
      * 解锁，释放锁资源

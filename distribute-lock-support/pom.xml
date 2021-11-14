@@ -11,6 +11,8 @@
     <description>分布式锁实现部分</description>
     <modules>
         <module>distribute-lock-redis-support</module>
+        <module>distribute-lock-redlock-support</module>
+        <module>distribute-lock-zookeeper-support</module>
     </modules>
 
     <artifactId>distribute-lock-support</artifactId>

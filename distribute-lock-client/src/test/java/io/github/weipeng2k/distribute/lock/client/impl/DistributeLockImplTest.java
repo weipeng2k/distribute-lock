@@ -89,21 +89,19 @@ public class DistributeLockImplTest {
 
         // 2nd not get
         Thread thread = new Thread(() -> {
-            Assert.assertFalse(distributeLock.tryLock(3, TimeUnit.SECONDS));
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            distributeLock.unlock();
+            boolean b = distributeLock.tryLock(3, TimeUnit.SECONDS);
+            Assert.assertFalse(b);
 
-            Assert.assertTrue(distributeLock.tryLock(3, TimeUnit.SECONDS));
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            b = distributeLock.tryLock(3, TimeUnit.SECONDS);
+            Assert.assertTrue(b);
+            if (b) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                distributeLock.unlock();
             }
-            distributeLock.unlock();
         });
 
         thread.start();
@@ -167,7 +165,8 @@ public class DistributeLockImplTest {
         LockHandlerFactory lockHandlerFactory = new LockHandlerFactoryImpl(
                 List.of(new TestHandler("1"), new TestHandler("2"), new LockHandler() {
                     @Override
-                    public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+                    public AcquireResult acquire(AcquireContext acquireContext,
+                                                 AcquireChain acquireChain) throws InterruptedException {
                         return acquireChain.invoke(acquireContext);
                     }
 
@@ -216,7 +215,8 @@ public class DistributeLockImplTest {
         }
 
         @Override
-        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+        public AcquireResult acquire(AcquireContext acquireContext,
+                                     AcquireChain acquireChain) throws InterruptedException {
             System.out.println(Thread.currentThread() + "Enter " + name + ", before acquire@" + new Date());
             try {
                 return acquireChain.invoke(acquireContext);

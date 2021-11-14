@@ -18,7 +18,8 @@ public interface LockRemoteResource {
      * @param timeUnit      单位
      * @return true，表示获取成功，如果没有获取到则返回false
      */
-    AcquireResult tryAcquire(String resourceName, String resourceValue, long waitTime, TimeUnit timeUnit);
+    AcquireResult tryAcquire(String resourceName, String resourceValue, long waitTime,
+                             TimeUnit timeUnit) throws InterruptedException;
 
     /**
      * <pre>

@@ -71,7 +71,7 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
     private static class HeadLockHandler implements LockHandler {
 
         @Override
-        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) {
+        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) throws InterruptedException{
             return acquireChain.invoke(acquireContext);
         }
 

@@ -40,7 +40,7 @@ final class Chain implements LockHandler.AcquireChain, LockHandler.ReleaseChain 
     }
 
     @Override
-    public AcquireResult invoke(AcquireContext acquireContext) {
+    public AcquireResult invoke(AcquireContext acquireContext) throws InterruptedException {
         forwardIdx++;
         if (forwardIdx < handlerList.size()) {
             return handlerList.get(forwardIdx).acquire(acquireContext, this);
