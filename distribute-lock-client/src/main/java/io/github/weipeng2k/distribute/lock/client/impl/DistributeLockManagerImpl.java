@@ -12,6 +12,9 @@ import java.util.UUID;
  */
 public class DistributeLockManagerImpl implements DistributeLockManager {
 
+    /**
+     * LockHandlerFactory
+     */
     private final LockHandlerFactory lockHandlerFactory;
 
     public DistributeLockManagerImpl(LockHandlerFactory lockHandlerFactory) {

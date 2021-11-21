@@ -22,13 +22,21 @@ import java.util.concurrent.TimeUnit;
  * @author weipeng2k 2021年11月10日 下午21:56:40
  */
 class DistributeLockImpl implements DistributeLock {
-
+    /**
+     * LockHandlerFactory
+     */
     private final LockHandlerFactory lockHandlerFactory;
-
+    /**
+     * 锁的名称
+     */
     private final String resourceName;
-
+    /**
+     * 锁的值
+     */
     private final String resourceValue;
-
+    /**
+     * 锁的状态
+     */
     private volatile boolean locked;
 
     DistributeLockImpl(String resourceName, String resourceValue, LockHandlerFactory lockHandlerFactory) {

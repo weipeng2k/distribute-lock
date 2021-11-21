@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class ZooKeeperLockRemoteResource implements LockRemoteResource {
 
-    private CuratorFramework curatorFramework;
+    private final CuratorFramework curatorFramework;
 
-    private ConcurrentMap<String, InterProcessMutex> lockRepo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, InterProcessMutex> lockRepo = new ConcurrentHashMap<>();
 
     public ZooKeeperLockRemoteResource(String connectString, int baseSleepTimeMs, int maxRetries, int sessionTimeoutMs,
                                        int connectionTimeoutMs) {
