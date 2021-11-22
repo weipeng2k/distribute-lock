@@ -34,10 +34,16 @@ public interface AcquireContext {
 
     /**
      * 获取锁的最长超时时间，单位：纳秒
+     *
      * @return 获取锁的最长超时时间，单位：纳秒
      */
     long getEndNanoTime();
 
+    /**
+     * 获取当前剩余的超时时间，单位：纳秒
+     *
+     * @return 当前剩余的超时时间，单位：纳秒
+     */
     default long getRemainingNanoTime() {
         return getEndNanoTime() - System.nanoTime();
     }

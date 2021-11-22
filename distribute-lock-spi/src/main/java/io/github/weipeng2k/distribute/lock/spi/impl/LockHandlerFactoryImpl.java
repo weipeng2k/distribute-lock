@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * <pre>
+ * LockHandlerFactory实现，完成{@link LockHandler}链的构造。
+ *
+ * </pre>
+ *
  * @author weipeng2k 2021年11月10日 下午17:56:43
  */
 public class LockHandlerFactoryImpl implements LockHandlerFactory {
@@ -68,10 +73,14 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
         return handlers;
     }
 
+    /**
+     * 头节点
+     */
     private static class HeadLockHandler implements LockHandler {
 
         @Override
-        public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) throws InterruptedException{
+        public AcquireResult acquire(AcquireContext acquireContext,
+                                     AcquireChain acquireChain) throws InterruptedException {
             return acquireChain.invoke(acquireContext);
         }
 
@@ -81,6 +90,9 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
         }
     }
 
+    /**
+     * 尾节点
+     */
     private static class TailLockHandler implements LockHandler {
 
         private final LockRemoteResource lockRemoteResource;

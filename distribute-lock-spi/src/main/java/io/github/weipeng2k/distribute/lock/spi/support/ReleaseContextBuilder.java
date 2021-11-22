@@ -25,6 +25,11 @@ public final class ReleaseContextBuilder {
         this.resourceValue = resourceValue;
     }
 
+    /**
+     * 构造一个释放锁的上下文
+     *
+     * @return 释放锁上下文
+     */
     public ReleaseContext build() {
         return new ReleaseContextSupport(resourceName, resourceValue);
     }

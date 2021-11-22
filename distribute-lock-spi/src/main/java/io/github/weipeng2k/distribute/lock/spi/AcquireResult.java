@@ -42,6 +42,14 @@ public interface AcquireResult {
      */
     Optional<String> getFailureMessage();
 
+    /**
+     * <pre>
+     * 获取锁失败的异常
+     * 如果{@link #isSuccess()}返回false，则可以通过该方法获取到失败的异常
+     * </pre>
+     *
+     * @return 失败异常
+     */
     Optional<Throwable> getException();
 
     /**

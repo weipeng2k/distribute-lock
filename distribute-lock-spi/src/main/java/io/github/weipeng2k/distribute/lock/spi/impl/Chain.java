@@ -8,6 +8,8 @@ import io.github.weipeng2k.distribute.lock.spi.ReleaseContext;
 import java.util.List;
 
 /**
+ * 获取锁/释放锁的Chain实现
+ *
  * @author weipeng2k 2021年11月10日 下午16:55:34
  */
 final class Chain implements LockHandler.AcquireChain, LockHandler.ReleaseChain {

@@ -3,6 +3,10 @@ package io.github.weipeng2k.distribute.lock.spi;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * <pre>
+ * 对锁实现的抽象，任何存储或系统只要可以满足以下获取与释放语义，就可以使用该接口整合如该框架
+ * </pre>
+ *
  * @author weipeng2k 2021年11月07日 下午20:11:40
  */
 public interface LockRemoteResource {
