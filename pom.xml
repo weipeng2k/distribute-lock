@@ -17,6 +17,8 @@
         <module>distribute-lock-support</module>
         <module>distribute-lock-classic</module>
         <module>distribute-lock-testsuite</module>
+        <module>distribute-lock-plugin</module>
+        <module>distribute-lock-starter</module>
     </modules>
 
     <properties>
@@ -28,6 +30,7 @@
         <spring.boot.version>2.5.0</spring.boot.version>
         <redisson.version>3.16.4</redisson.version>
         <curator-recipes.version>5.2.0</curator-recipes.version>
+        <spring-framework.version>5.3.7</spring-framework.version>
     </properties>
 
     <dependencyManagement>
@@ -47,6 +50,15 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring-framework.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 3rd import -->
+            <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
@@ -56,7 +68,6 @@
                 <artifactId>curator-recipes</artifactId>
                 <version>${curator-recipes.version}</version>
             </dependency>
-
 
             <!-- Self Projects-->
             <dependency>
@@ -92,6 +103,16 @@
             <dependency>
                 <groupId>io.github.weipeng2k</groupId>
                 <artifactId>distribute-lock-zookeeper-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-common-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-redis-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

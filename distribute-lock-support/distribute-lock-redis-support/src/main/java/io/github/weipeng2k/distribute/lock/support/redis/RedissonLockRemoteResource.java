@@ -37,7 +37,9 @@ public class RedissonLockRemoteResource implements LockRemoteResource {
                                     TimeUnit timeUnit) throws InterruptedException {
         RLock lock = redisson.getLock(resourceName);
 
-        long ownTime = timeUnit.convert(ownSecond, TimeUnit.SECONDS);
+        Integer liveSecond = OwnSecond.getLiveSecond();
+
+        long ownTime = timeUnit.convert(liveSecond != null ? liveSecond : ownSecond, TimeUnit.SECONDS);
         AcquireResultBuilder acquireResultBuilder;
 
         boolean ret = lock.tryLock(waitTime, ownTime, timeUnit);

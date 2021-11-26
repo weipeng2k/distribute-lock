@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.weipeng2k</groupId>
-            <artifactId>distribute-lock-redis-support</artifactId>
+            <artifactId>distribute-lock-redis-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.weipeng2k</groupId>

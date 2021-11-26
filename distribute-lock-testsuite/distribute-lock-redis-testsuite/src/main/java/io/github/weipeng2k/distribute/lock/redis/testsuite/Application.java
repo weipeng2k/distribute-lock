@@ -2,11 +2,6 @@ package io.github.weipeng2k.distribute.lock.redis.testsuite;
 
 import io.github.weipeng2k.distribute.lock.client.DistributeLock;
 import io.github.weipeng2k.distribute.lock.client.DistributeLockManager;
-import io.github.weipeng2k.distribute.lock.client.impl.DistributeLockManagerImpl;
-import io.github.weipeng2k.distribute.lock.spi.LockHandlerFactory;
-import io.github.weipeng2k.distribute.lock.spi.LockRemoteResource;
-import io.github.weipeng2k.distribute.lock.spi.impl.LockHandlerFactoryImpl;
-import io.github.weipeng2k.distribute.lock.support.redis.RedissonLockRemoteResource;
 import io.github.weipeng2k.distribute.lock.test.support.CommandLineHelper;
 import io.github.weipeng2k.distribute.lock.test.support.Counter;
 import io.github.weipeng2k.distribute.lock.test.support.DLTester;
@@ -18,8 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-
 /**
  * @author weipeng2k 2021年11月14日 下午16:52:19
  */
@@ -27,7 +20,7 @@ import java.util.Collections;
 public class Application implements CommandLineRunner {
 
     @Autowired
-    private DistributeLock distributeLock;
+    private DistributeLockManager distributeLockManager;
     @Autowired
     private Counter counter;
 
@@ -37,6 +30,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        DistributeLock distributeLock = distributeLockManager.getLock("lock_key");
         int times = CommandLineHelper.getTimes(args, 1000);
         DLTester dlTester = new DLTester(distributeLock, 3);
         dlTester.work(times, () -> {
@@ -51,23 +45,6 @@ public class Application implements CommandLineRunner {
 
     @Configuration
     static class Config {
-        @Bean
-        DistributeLock distributeLock(LockHandlerFactory lockHandlerFactory) {
-            DistributeLockManager distributeLockManager = new DistributeLockManagerImpl(lockHandlerFactory);
-
-            return distributeLockManager.getLock("lock_key");
-        }
-
-        @Bean
-        LockHandlerFactory lockHandlerFactory(LockRemoteResource lockRemoteResource) {
-            return new LockHandlerFactoryImpl(Collections.emptyList(), lockRemoteResource);
-        }
-
-        @Bean
-        LockRemoteResource lockRemoteResource(@Value("${spring.distribute-lock.address}") String address,
-                                              @Value("${spring.distribute-lock.own-second}") int ownSecond) {
-            return new RedissonLockRemoteResource(address, ownSecond);
-        }
 
         @Bean
         Counter counter(@Value("${spring.distribute-lock.counter.host}") String host,

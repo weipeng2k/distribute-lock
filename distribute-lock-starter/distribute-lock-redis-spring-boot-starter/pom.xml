@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>distribute-lock-starter</artifactId>
+        <groupId>io.github.weipeng2k</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <description>starter: 基于Redis的实现</description>
+
+    <artifactId>distribute-lock-redis-spring-boot-starter</artifactId>
+    <name>distribute-lock-redis-spring-boot-starter</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.weipeng2k</groupId>
+            <artifactId>distribute-lock-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.weipeng2k</groupId>
+            <artifactId>distribute-lock-redis-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.weipeng2k</groupId>
+            <artifactId>distribute-lock-common-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -16,7 +16,7 @@ public interface DistributeLockManager {
      *
      * 使用方式：
      *
-     * <code>DistributeLock lock = distributeLockManager.getLock();</code>
+     * <code>DistributeLock lock = distributeLockManager.getLock("lock_name");</code>
      * <code>if (lock.tryLock(1, TimeUnit.SECONDS)) {</code>
      * <code>    try {</code>
      * <code>        // do sth...</code>
