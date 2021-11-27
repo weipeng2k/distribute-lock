@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author weipeng2k 2021年11月26日 下午23:22:11
  */
-//@ConfigurationProperties(prefix = Constants.PREFIX)
+@ConfigurationProperties(prefix = Constants.PREFIX)
 public class RedisProperties {
 
     private String address;

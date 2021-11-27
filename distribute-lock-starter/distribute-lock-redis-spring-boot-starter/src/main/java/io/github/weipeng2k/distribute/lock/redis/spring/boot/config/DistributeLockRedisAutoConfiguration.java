@@ -27,6 +27,8 @@ import org.springframework.core.env.Environment;
 @Configuration
 @ConditionalOnProperty(prefix = Constants.PREFIX, name = "address")
 @ConditionalOnClass(RedissonLockRemoteResource.class)
+@EnableConfigurationProperties(RedisProperties.class)
+@Import(CommonConfig.class)
 public class DistributeLockRedisAutoConfiguration implements EnvironmentAware {
 
     private Environment environment;
