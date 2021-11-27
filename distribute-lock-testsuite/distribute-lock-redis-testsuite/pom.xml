@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>io.github.weipeng2k</groupId>
+            <artifactId>distribute-lock-logging-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.weipeng2k</groupId>
             <artifactId>distribute-lock-test-support</artifactId>
         </dependency>
         <dependency>
