@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+分布式锁的日志配置
+-->
+
+<included>
+    <property name="DISTRIBUTE_LOCK_LOG_PATTERN" value="${DISTRIBUTE_LOCK_LOG_PATTERN:-%d,%m%n}"/>
+    <property name="DISTRIBUTE_LOCK_ACCESS_LOG_FILE" value="${DISTRIBUTE_LOCK_LOG__DIR}/distribute-lock-access.log"/>
+
+    <appender name="DISTRIBUTE_LOCK_ACCESS_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DISTRIBUTE_LOCK_ACCESS_LOG_FILE}/</file>
+        <encoder>
+            <pattern>${DISTRIBUTE_LOCK_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${DISTRIBUTE_LOCK_ACCESS_LOG_FILE}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="DISTRIBUTE_LOCK_ACCESS_LOGGER" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="DISTRIBUTE_LOCK_ACCESS_APPENDER"/>
+    </logger>
+
+</included>

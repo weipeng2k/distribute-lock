@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
  * @author weipeng2k 2021年11月27日 下午20:44:18
  */
 @Order(1)
-public class LoggingLockHandler implements LockHandler, ErrorAware {
+public class AccessLoggingLockHandler implements LockHandler, ErrorAware {
 
-    private static final Logger logger = LoggerFactory.getLogger("DISTRIBUTE_LOCK_LOGGER");
+    private static final Logger logger = LoggerFactory.getLogger("DISTRIBUTE_LOCK_ACCESS_LOGGER");
 
     @Override
     public AcquireResult acquire(AcquireContext acquireContext, AcquireChain acquireChain) throws InterruptedException {
