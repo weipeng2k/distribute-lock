@@ -97,7 +97,9 @@ class DistributeLockImpl implements DistributeLock {
         if (locked) {
             LockHandler tailLockHandler = lockHandlerFactory.getTail();
             ReleaseContext releaseContext = new ReleaseContextBuilder(resourceName, resourceValue)
+                    .start(System.nanoTime())
                     .build();
+
             LockHandler.ReleaseChain releaseChain = lockHandlerFactory.getReleaseChain();
 
             try {

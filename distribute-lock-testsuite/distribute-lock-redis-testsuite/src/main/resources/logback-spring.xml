@@ -7,7 +7,7 @@
     <property name="LOG_PATH" value="${user.home}/logs/${APP_NAME}"/>
 
     <!--分布式锁日志-->
-    <property name="DISTRIBUTE_LOCK_LOG__DIR" value="${LOG_PATH}/distribute-lock" />
+    <property name="DISTRIBUTE_LOCK_LOG_DIR" value="${LOG_PATH}/distribute-lock" />
     <include resource="io/github/weipeng2k/distribute-lock/distribute-lock-access-log.xml"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

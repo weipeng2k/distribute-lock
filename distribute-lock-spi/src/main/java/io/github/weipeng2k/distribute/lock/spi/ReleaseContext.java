@@ -22,4 +22,11 @@ public interface ReleaseContext {
      * @return 锁资源值
      */
     String getResourceValue();
+
+    /**
+     * 获取开始释放锁的开始时间，单位：纳秒
+     *
+     * @return 获取锁的开始时间，单位：纳秒
+     */
+    long getStartNanoTime();
 }

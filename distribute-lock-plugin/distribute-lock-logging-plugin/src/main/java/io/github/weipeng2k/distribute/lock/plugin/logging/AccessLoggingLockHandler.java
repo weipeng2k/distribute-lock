@@ -39,7 +39,9 @@ public class AccessLoggingLockHandler implements LockHandler, ErrorAware {
     public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
         releaseChain.invoke(releaseContext);
 
-        logger.info("release|{}|{}", releaseContext.getResourceName(), releaseContext.getResourceValue());
+        logger.info("release|{}|{}|{}", releaseContext.getResourceName(), releaseContext.getResourceValue(),
+                TimeUnit.MILLISECONDS.convert(System.nanoTime() - releaseContext.getStartNanoTime(),
+                        TimeUnit.NANOSECONDS));
     }
 
     @Override
@@ -52,6 +54,8 @@ public class AccessLoggingLockHandler implements LockHandler, ErrorAware {
 
     @Override
     public void onReleaseError(ReleaseContext releaseContext, Throwable throwable) {
-        logger.error("release|{}|{}", releaseContext.getResourceName(), releaseContext.getResourceValue(), throwable);
+        logger.error("release|{}|{}|{}", releaseContext.getResourceName(), releaseContext.getResourceValue(),
+                TimeUnit.MILLISECONDS.convert(System.nanoTime() - releaseContext.getStartNanoTime(),
+                        TimeUnit.NANOSECONDS), throwable);
     }
 }

@@ -6,7 +6,7 @@
 
 <included>
     <property name="DISTRIBUTE_LOCK_LOG_PATTERN" value="${DISTRIBUTE_LOCK_LOG_PATTERN:-%d,%m%n}"/>
-    <property name="DISTRIBUTE_LOCK_ACCESS_LOG_FILE" value="${DISTRIBUTE_LOCK_LOG__DIR}/distribute-lock-access.log"/>
+    <property name="DISTRIBUTE_LOCK_ACCESS_LOG_FILE" value="${DISTRIBUTE_LOCK_LOG_DIR}/distribute-lock-access.log"/>
 
     <appender name="DISTRIBUTE_LOCK_ACCESS_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${DISTRIBUTE_LOCK_ACCESS_LOG_FILE}/</file>
