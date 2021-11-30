@@ -16,30 +16,31 @@ import java.util.concurrent.TimeUnit;
 /**
  * <pre>
  * LockHandlerFactory实现，完成{@link LockHandler}链的构造。
- *
+ * 获取和释放的ThreadLocal考虑分离开。
  * </pre>
  *
  * @author weipeng2k 2021年11月10日 下午17:56:43
  */
 public class LockHandlerFactoryImpl implements LockHandlerFactory {
 
-    // avoid too much little objs in heap, reuse Chain
-    private final ThreadLocal<Chain> HANDLER_CHAIN_THREAD_LOCAL;
+    // avoid too much little objs in heap, reuse Chain, for acquire
+    private final ThreadLocal<Chain> ACQUIRE_HANDLER_CHAIN_THREAD_LOCAL;
+    // for release
+    private final ThreadLocal<Chain> RELEASE_HANDLER_CHAIN_THREAD_LOCAL;
 
     private final List<LockHandler> handlers;
 
     private final LockHandler head;
 
-    private final LockHandler tail;
-
     public LockHandlerFactoryImpl(List<LockHandler> lockHandlerList, LockRemoteResource lockRemoteResource) {
         LinkedList<LockHandler> temp = new LinkedList<>(lockHandlerList);
         head = new HeadLockHandler();
-        tail = new TailLockHandler(lockRemoteResource);
+        LockHandler tail = new TailLockHandler(lockRemoteResource);
         temp.addFirst(head);
         temp.addLast(tail);
         handlers = new ArrayList<>(temp);
-        HANDLER_CHAIN_THREAD_LOCAL = ThreadLocal.withInitial(() -> new Chain(handlers));
+        ACQUIRE_HANDLER_CHAIN_THREAD_LOCAL = ThreadLocal.withInitial(() -> new Chain(handlers));
+        RELEASE_HANDLER_CHAIN_THREAD_LOCAL = ThreadLocal.withInitial(() -> new Chain(handlers));
     }
 
     @Override
@@ -48,23 +49,16 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
     }
 
     @Override
-    public LockHandler getTail() {
-        return tail;
-    }
-
-    @Override
     public LockHandler.AcquireChain getAcquireChain() {
-        return getChain();
+        Chain chain = ACQUIRE_HANDLER_CHAIN_THREAD_LOCAL.get();
+        chain.resetAcquireIndex();
+        return chain;
     }
 
     @Override
     public LockHandler.ReleaseChain getReleaseChain() {
-        return getChain();
-    }
-
-    private Chain getChain() {
-        Chain chain = HANDLER_CHAIN_THREAD_LOCAL.get();
-        chain.resetIndex();
+        Chain chain = RELEASE_HANDLER_CHAIN_THREAD_LOCAL.get();
+        chain.resetReleaseIndex();
         return chain;
     }
 
@@ -86,7 +80,7 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
 
         @Override
         public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
-
+            releaseChain.invoke(releaseContext);
         }
     }
 
@@ -124,7 +118,6 @@ public class LockHandlerFactoryImpl implements LockHandlerFactory {
         public void release(ReleaseContext releaseContext, ReleaseChain releaseChain) {
             try {
                 lockRemoteResource.release(releaseContext.getResourceName(), releaseContext.getResourceValue());
-                releaseChain.invoke(releaseContext);
             } catch (Throwable ex) {
                 throw new RuntimeException(
                         "release lock remote resource:" + releaseContext.getResourceName() + " got exception", ex);

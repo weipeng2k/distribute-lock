@@ -49,7 +49,7 @@ class DistributeLockImpl implements DistributeLock {
     public boolean tryLock(long waitTime, TimeUnit unit) {
         Objects.requireNonNull(unit, "TimeUnit is null.");
 
-        LockHandler headLockHandler = lockHandlerFactory.getHead();
+        LockHandler head = lockHandlerFactory.getHead();
         AcquireContext acquireContext = new AcquireContextBuilder(resourceName, resourceValue)
                 .start(System.nanoTime())
                 .timeout(waitTime, unit)
@@ -57,7 +57,7 @@ class DistributeLockImpl implements DistributeLock {
         LockHandler.AcquireChain acquireChain = lockHandlerFactory.getAcquireChain();
 
         try {
-            AcquireResult acquireResult = headLockHandler.acquire(acquireContext, acquireChain);
+            AcquireResult acquireResult = head.acquire(acquireContext, acquireChain);
             if (acquireResult.isSuccess()) {
                 locked = true;
             }
@@ -95,7 +95,7 @@ class DistributeLockImpl implements DistributeLock {
     @Override
     public void unlock() {
         if (locked) {
-            LockHandler tailLockHandler = lockHandlerFactory.getTail();
+            LockHandler head = lockHandlerFactory.getHead();
             ReleaseContext releaseContext = new ReleaseContextBuilder(resourceName, resourceValue)
                     .start(System.nanoTime())
                     .build();
@@ -103,7 +103,7 @@ class DistributeLockImpl implements DistributeLock {
             LockHandler.ReleaseChain releaseChain = lockHandlerFactory.getReleaseChain();
 
             try {
-                tailLockHandler.release(releaseContext, releaseChain);
+                head.release(releaseContext, releaseChain);
                 locked = false;
             } catch (Throwable ex) {
                 List<LockHandler> handlers = lockHandlerFactory.getHandlers();
@@ -125,7 +125,7 @@ class DistributeLockImpl implements DistributeLock {
      */
     private void errorNotify(ReleaseContext releaseContext, LockHandler.ReleaseChain releaseChain, Throwable ex,
                              List<LockHandler> handlers) {
-        for (int i = handlers.size() - 1; i >= releaseChain.getReleaseCurrentIndex(); i--) {
+        for (int i = 0; i <= releaseChain.getReleaseCurrentIndex(); i++) {
             try {
                 LockHandler handler = handlers.get(i);
                 if (handler instanceof ErrorAware) {

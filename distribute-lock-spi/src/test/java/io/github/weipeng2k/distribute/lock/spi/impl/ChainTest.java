@@ -103,7 +103,7 @@ public class ChainTest {
         handlerList.add(new TestHandler("T4"));
 
         Chain chain = new Chain(handlerList);
-        LockHandler lockHandler = handlerList.get(3);
+        LockHandler lockHandler = handlerList.get(0);
         try {
             lockHandler.release(releaseContext, chain);
         } catch (Exception ex) {
@@ -118,7 +118,7 @@ public class ChainTest {
         ReleaseContextBuilder releaseContextBuilder = new ReleaseContextBuilder("R", "V");
         ReleaseContext releaseContext = releaseContextBuilder.build();
 
-        LockHandler lockHandler = handlerList.get(3);
+        LockHandler lockHandler = handlerList.get(0);
         Chain chain = new Chain(handlerList);
 
         lockHandler.release(releaseContext, chain);

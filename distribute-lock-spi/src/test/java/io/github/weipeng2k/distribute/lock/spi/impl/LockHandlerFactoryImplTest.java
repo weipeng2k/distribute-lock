@@ -48,11 +48,6 @@ public class LockHandlerFactoryImplTest {
     }
 
     @Test
-    public void getTail() {
-        Assert.assertNotNull(lockHandlerFactory.getTail());
-    }
-
-    @Test
     public void getAcquireChain() throws Exception {
         AcquireContextBuilder acquireContextBuilder = new AcquireContextBuilder("R", "V");
         AcquireContext acquireContext = acquireContextBuilder
@@ -69,7 +64,7 @@ public class LockHandlerFactoryImplTest {
     public void getReleaseChain() {
         ReleaseContextBuilder releaseContextBuilder = new ReleaseContextBuilder("R", "V");
         ReleaseContext releaseContext = releaseContextBuilder.build();
-        lockHandlerFactory.getTail().release(releaseContext,
+        lockHandlerFactory.getHead().release(releaseContext,
                 lockHandlerFactory.getReleaseChain());
     }
 

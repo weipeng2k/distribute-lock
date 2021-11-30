@@ -19,56 +19,59 @@ final class Chain implements LockHandler.AcquireChain, LockHandler.ReleaseChain 
      */
     private final List<LockHandler> handlerList;
     /**
-     * 游标
+     * 获取锁的游标
      */
-    private int forwardIdx;
+    private int acquireIdx;
     /**
-     * 回退
+     * 释放锁的游标
      */
-    private int backwardIdx;
+    private int releaseIdx;
 
     public Chain(List<LockHandler> handlerList) {
         this.handlerList = handlerList;
-        forwardIdx = 0;
-        backwardIdx = handlerList.size() - 1;
+        acquireIdx = 0;
+        releaseIdx = 0;
     }
 
     /**
      * 重置index
      */
-    public void resetIndex() {
-        forwardIdx = 0;
-        backwardIdx = handlerList.size() - 1;
+    public void resetAcquireIndex() {
+        acquireIdx = 0;
+    }
+
+    public void resetReleaseIndex() {
+        releaseIdx = 0;
     }
 
     @Override
     public AcquireResult invoke(AcquireContext acquireContext) throws InterruptedException {
-        forwardIdx++;
-        if (forwardIdx < handlerList.size()) {
-            return handlerList.get(forwardIdx).acquire(acquireContext, this);
+        acquireIdx++;
+        if (acquireIdx < handlerList.size()) {
+            return handlerList.get(acquireIdx).acquire(acquireContext, this);
         } else {
-            forwardIdx = handlerList.size() - 1;
+            acquireIdx = handlerList.size() - 1;
         }
         return null;
     }
 
     @Override
     public int getAcquireCurrentIndex() {
-        return forwardIdx;
+        return acquireIdx;
     }
 
     @Override
     public void invoke(ReleaseContext releaseContext) {
-        backwardIdx--;
-        if (backwardIdx >= 0) {
-            handlerList.get(backwardIdx).release(releaseContext, this);
+        releaseIdx++;
+        if (releaseIdx < handlerList.size()) {
+            handlerList.get(releaseIdx).release(releaseContext, this);
         } else {
-            backwardIdx = 0;
+            releaseIdx = handlerList.size() - 1;
         }
     }
 
     @Override
     public int getReleaseCurrentIndex() {
-        return backwardIdx;
+        return releaseIdx;
     }
 }
