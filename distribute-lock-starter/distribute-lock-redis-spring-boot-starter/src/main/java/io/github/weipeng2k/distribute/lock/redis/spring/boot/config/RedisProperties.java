@@ -12,6 +12,15 @@ public class RedisProperties {
 
     private int ownSecond = 10;
 
+    /**
+     * spin最小时间，毫秒
+     */
+    private int minSpinMillis = 10;
+    /**
+     * 随机spin增加的时间，毫秒
+     */
+    private int randomMillis = 10;
+
     public String getAddress() {
         return address;
     }
@@ -26,5 +35,21 @@ public class RedisProperties {
 
     public void setOwnSecond(int ownSecond) {
         this.ownSecond = ownSecond;
+    }
+
+    public int getMinSpinMillis() {
+        return minSpinMillis;
+    }
+
+    public void setMinSpinMillis(int minSpinMillis) {
+        this.minSpinMillis = minSpinMillis;
+    }
+
+    public int getRandomMillis() {
+        return randomMillis;
+    }
+
+    public void setRandomMillis(int randomMillis) {
+        this.randomMillis = randomMillis;
     }
 }

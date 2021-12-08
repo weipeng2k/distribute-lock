@@ -7,7 +7,7 @@ import io.github.weipeng2k.distribute.lock.common.config.LockHandlerFinder;
 import io.github.weipeng2k.distribute.lock.spi.LockHandlerFactory;
 import io.github.weipeng2k.distribute.lock.spi.LockRemoteResource;
 import io.github.weipeng2k.distribute.lock.spi.impl.LockHandlerFactoryImpl;
-import io.github.weipeng2k.distribute.lock.support.redis.RedissonLockRemoteResource;
+import io.github.weipeng2k.distribute.lock.support.redis.RedisLockRemoteResource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,7 +26,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @ConditionalOnProperty(prefix = Constants.PREFIX, name = "address")
-@ConditionalOnClass(RedissonLockRemoteResource.class)
+@ConditionalOnClass(RedisLockRemoteResource.class)
 @EnableConfigurationProperties(RedisProperties.class)
 @Import(CommonConfig.class)
 public class DistributeLockRedisAutoConfiguration implements EnvironmentAware {
@@ -40,7 +40,8 @@ public class DistributeLockRedisAutoConfiguration implements EnvironmentAware {
                 Bindable.of(RedisProperties.class));
         RedisProperties redisProperties = bindResult.get();
 
-        return new RedissonLockRemoteResource(redisProperties.getAddress(), redisProperties.getOwnSecond());
+        return new RedisLockRemoteResource(redisProperties.getAddress(), redisProperties.getOwnSecond(),
+                redisProperties.getMinSpinMillis(), redisProperties.getRandomMillis());
     }
 
     @Bean("redisLockHandlerFactory")
