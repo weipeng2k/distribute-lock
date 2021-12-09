@@ -75,7 +75,7 @@ public class RedisLockRemoteResource implements LockRemoteResource {
                     result = true;
                     break;
                 } else {
-                    spinUnInterrupt();
+                    spin();
                 }
             }
             acquireResultBuilder = new AcquireResultBuilder(result);
@@ -130,12 +130,8 @@ public class RedisLockRemoteResource implements LockRemoteResource {
     /**
      * 自旋等待
      */
-    private void spinUnInterrupt() {
-        try {
-            long sleepMillis = new Random().nextInt(randomMillis) + minSpinMillis;
-            TimeUnit.MILLISECONDS.sleep(sleepMillis);
-        } catch (Exception ex) {
-            // Ignore.
-        }
+    private void spin() throws InterruptedException{
+        long sleepMillis = new Random().nextInt(randomMillis) + minSpinMillis;
+        TimeUnit.MILLISECONDS.sleep(sleepMillis);
     }
 }

@@ -7,11 +7,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = Constants.PREFIX)
 public class RedisProperties {
-
+    /**
+     * redis server地址
+     */
     private String address;
-
+    /**
+     * redis的key过期时间
+     */
     private int ownSecond = 10;
-
     /**
      * spin最小时间，毫秒
      */
