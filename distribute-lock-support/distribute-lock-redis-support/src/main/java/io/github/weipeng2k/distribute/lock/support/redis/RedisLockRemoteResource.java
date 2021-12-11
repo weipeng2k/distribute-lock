@@ -9,7 +9,7 @@ import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.sync.RedisCommands;
 
-import java.util.Objects;
+import java.time.Duration;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -39,8 +39,10 @@ public class RedisLockRemoteResource implements LockRemoteResource {
      */
     private final int randomMillis;
 
-    public RedisLockRemoteResource(String address, int ownSecond, int minSpinMillis, int randomMillis) {
+    public RedisLockRemoteResource(String address, int timeoutMillis, int ownSecond, int minSpinMillis,
+                                   int randomMillis) {
         RedisURI redisURI = RedisURI.create(address);
+        redisURI.setTimeout(Duration.ofMillis(timeoutMillis));
         this.syncCommands = RedisClient.create(redisURI).connect().sync();
         this.ownSecond = ownSecond;
         this.minSpinMillis = minSpinMillis;
@@ -50,7 +52,6 @@ public class RedisLockRemoteResource implements LockRemoteResource {
     @Override
     public AcquireResult tryAcquire(String resourceName, String resourceValue, long waitTime,
                                     TimeUnit timeUnit) throws InterruptedException {
-        Objects.requireNonNull(timeUnit, "TimeUnit is null");
         // 目标最大超时时间
         long destinationNanoTime = System.nanoTime() + timeUnit.toNanos(waitTime);
         boolean result = false;
@@ -121,7 +122,7 @@ public class RedisLockRemoteResource implements LockRemoteResource {
                 result = true;
             }
         } catch (Exception ex) {
-            // Ignore.
+            throw new RuntimeException("set key:" + resourceName + " got exception.", ex);
         }
 
         return result;
@@ -130,7 +131,7 @@ public class RedisLockRemoteResource implements LockRemoteResource {
     /**
      * 自旋等待
      */
-    private void spin() throws InterruptedException{
+    private void spin() throws InterruptedException {
         long sleepMillis = new Random().nextInt(randomMillis) + minSpinMillis;
         TimeUnit.MILLISECONDS.sleep(sleepMillis);
     }

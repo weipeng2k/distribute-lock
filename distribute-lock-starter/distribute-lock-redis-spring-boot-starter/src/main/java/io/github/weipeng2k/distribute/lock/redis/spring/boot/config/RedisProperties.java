@@ -12,6 +12,10 @@ public class RedisProperties {
      */
     private String address;
     /**
+     * 访问超时，毫秒
+     */
+    private int timeoutMillis = 200;
+    /**
      * redis的key过期时间
      */
     private int ownSecond = 10;
@@ -54,5 +58,13 @@ public class RedisProperties {
 
     public void setRandomMillis(int randomMillis) {
         this.randomMillis = randomMillis;
+    }
+
+    public int getTimeoutMillis() {
+        return timeoutMillis;
+    }
+
+    public void setTimeoutMillis(int timeoutMillis) {
+        this.timeoutMillis = timeoutMillis;
     }
 }

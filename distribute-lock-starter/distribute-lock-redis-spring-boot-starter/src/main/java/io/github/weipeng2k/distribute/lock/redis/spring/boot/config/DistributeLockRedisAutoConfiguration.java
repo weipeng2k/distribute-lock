@@ -40,8 +40,8 @@ public class DistributeLockRedisAutoConfiguration implements EnvironmentAware {
                 Bindable.of(RedisProperties.class));
         RedisProperties redisProperties = bindResult.get();
 
-        return new RedisLockRemoteResource(redisProperties.getAddress(), redisProperties.getOwnSecond(),
-                redisProperties.getMinSpinMillis(), redisProperties.getRandomMillis());
+        return new RedisLockRemoteResource(redisProperties.getAddress(), redisProperties.getTimeoutMillis(),
+                redisProperties.getOwnSecond(), redisProperties.getMinSpinMillis(), redisProperties.getRandomMillis());
     }
 
     @Bean("redisLockHandlerFactory")
