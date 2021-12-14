@@ -3,6 +3,7 @@ package io.github.weipeng2k.distribute.lock.test.support;
 import io.github.weipeng2k.distribute.lock.client.DistributeLock;
 
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * @author weipeng2k 2021年11月13日 下午21:23:41
@@ -22,22 +23,33 @@ public class DLTester {
         this.waitSecond = waitSecond;
     }
 
-    public void work(int times, Runnable runnable) {
+    /**
+     * 测试工作
+     *
+     * @param times           重复次数
+     * @param concurrentLevel 并发级别
+     * @param runnable        job
+     */
+    public void work(int times, int concurrentLevel, Runnable runnable) {
         for (int i = 0; i < times; i++) {
-            try {
-                if (distributeLock.tryLock(waitSecond, TimeUnit.SECONDS)) {
-                    try {
-                        lockSuccess++;
-                        runnable.run();
-                    } finally {
-                        distributeLock.unlock();
-                    }
-                } else {
-                    lockFailure++;
-                }
-            } catch (Exception ex) {
-                // Ignore.
-            }
+            IntStream.range(0, concurrentLevel)
+                    .parallel()
+                    .forEach(unused -> {
+                        try {
+                            if (distributeLock.tryLock(waitSecond, TimeUnit.SECONDS)) {
+                                try {
+                                    lockSuccess++;
+                                    runnable.run();
+                                } finally {
+                                    distributeLock.unlock();
+                                }
+                            } else {
+                                lockFailure++;
+                            }
+                        } catch (Exception ex) {
+                            // Ignore.
+                        }
+                    });
         }
     }
 

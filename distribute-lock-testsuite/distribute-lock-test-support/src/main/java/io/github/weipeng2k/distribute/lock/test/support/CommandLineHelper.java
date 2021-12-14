@@ -20,4 +20,20 @@ public final class CommandLineHelper {
 
         return times;
     }
+
+    /**
+     * 获取命令行上的并发度
+     *
+     * @param args                   命令行参数
+     * @param defaultConcurrentLevel 默认并行度
+     * @return 并行度
+     */
+    public static int getConcurrentLevel(String[] args, int defaultConcurrentLevel) {
+        int concurrentLevel = defaultConcurrentLevel;
+        if (args != null && args.length > 1) {
+            concurrentLevel = Integer.parseInt(args[1]);
+        }
+
+        return concurrentLevel;
+    }
 }

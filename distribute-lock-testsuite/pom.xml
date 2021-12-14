@@ -15,6 +15,7 @@
         <module>distribute-lock-redis-testsuite</module>
         <module>distribute-lock-redlock-testsuite</module>
         <module>distribute-lock-zookeeper-testsuite</module>
+        <module>distribute-lock-redis-local-hotspot-testsuite</module>
     </modules>
 
     <artifactId>distribute-lock-testsuite</artifactId>

@@ -38,8 +38,9 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         int times = CommandLineHelper.getTimes(args, 1000);
+        int concurrentLevel = CommandLineHelper.getConcurrentLevel(args, 1);
         DLTester dlTester = new DLTester(distributeLock, 3);
-        dlTester.work(times, () -> {
+        dlTester.work(times, concurrentLevel, () -> {
             int i = counter.get();
             i++;
             counter.set(i);

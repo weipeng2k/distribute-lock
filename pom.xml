@@ -120,6 +120,11 @@
                 <artifactId>distribute-lock-logging-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.weipeng2k</groupId>
+                <artifactId>distribute-lock-local-hotspot-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

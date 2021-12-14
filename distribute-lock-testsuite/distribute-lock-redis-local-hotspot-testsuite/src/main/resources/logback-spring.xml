@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- https://github.com/spring-projects/spring-boot/blob/v1.5.13.RELEASE/spring-boot/src/main/resources/org/springframework/boot/logging/logback/defaults.xml -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="APP_NAME" value="distribute-lock-redis-local-hotspot-testsuite"/>
+    <property name="LOG_PATH" value="${user.home}/logs/${APP_NAME}"/>
+
+    <!--分布式锁日志-->
+    <property name="DISTRIBUTE_LOCK_LOG_DIR" value="${LOG_PATH}/distribute-lock" />
+    <include resource="io/github/weipeng2k/distribute-lock/distribute-lock-access-log.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

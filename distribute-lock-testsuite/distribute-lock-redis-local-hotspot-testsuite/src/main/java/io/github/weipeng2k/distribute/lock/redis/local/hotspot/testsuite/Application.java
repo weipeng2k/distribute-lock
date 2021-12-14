@@ -1,7 +1,8 @@
-package io.github.weipeng2k.distribute.lock.redis.testsuite;
+package io.github.weipeng2k.distribute.lock.redis.local.hotspot.testsuite;
 
 import io.github.weipeng2k.distribute.lock.client.DistributeLock;
 import io.github.weipeng2k.distribute.lock.client.DistributeLockManager;
+import io.github.weipeng2k.distribute.lock.plugin.local.hotspot.LocalHotSpotLockRepo;
 import io.github.weipeng2k.distribute.lock.test.support.CommandLineHelper;
 import io.github.weipeng2k.distribute.lock.test.support.Counter;
 import io.github.weipeng2k.distribute.lock.test.support.DLTester;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author weipeng2k 2021年11月14日 下午16:52:19
+ * @author weipeng2k 2021年12月14日 下午22:04:19
  */
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -23,6 +24,8 @@ public class Application implements CommandLineRunner {
     private DistributeLockManager distributeLockManager;
     @Autowired
     private Counter counter;
+    @Autowired
+    private LocalHotSpotLockRepo localHotSpotLockRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -30,6 +33,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        localHotSpotLockRepo.createLock("lock_key");
         DistributeLock distributeLock = distributeLockManager.getLock("lock_key");
         int times = CommandLineHelper.getTimes(args, 1000);
         int concurrentLevel = CommandLineHelper.getConcurrentLevel(args, 1);

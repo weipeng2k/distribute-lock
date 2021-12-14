@@ -8,14 +8,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <description>分布式锁：Redis实现测试</description>
 
-    <artifactId>distribute-lock-redis-testsuite</artifactId>
-    <name>distribute-lock-redis-testsuite</name>
-
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-    </properties>
+    <artifactId>distribute-lock-redis-local-hotspot-testsuite</artifactId>
+    <name>distribute-lock-redis-local-hotspot-testsuite</name>
 
     <dependencies>
         <dependency>
@@ -28,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>io.github.weipeng2k</groupId>
+            <artifactId>distribute-lock-local-hotspot-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.weipeng2k</groupId>
             <artifactId>distribute-lock-test-support</artifactId>
         </dependency>
         <dependency>
@@ -35,7 +34,6 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -54,4 +52,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -12,6 +12,7 @@
     <description>分布式锁：插件项目</description>
     <modules>
         <module>distribute-lock-logging-plugin</module>
+        <module>distribute-lock-local-hotspot-plugin</module>
     </modules>
 
     <artifactId>distribute-lock-plugin</artifactId>
