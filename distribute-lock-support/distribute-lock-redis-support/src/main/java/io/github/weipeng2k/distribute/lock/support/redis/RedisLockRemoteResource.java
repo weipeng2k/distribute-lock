@@ -10,7 +10,7 @@ import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.sync.RedisCommands;
 
 import java.time.Duration;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -132,7 +132,7 @@ public class RedisLockRemoteResource implements LockRemoteResource {
      * 自旋等待
      */
     private void spin() throws InterruptedException {
-        long sleepMillis = new Random().nextInt(randomMillis) + minSpinMillis;
+        long sleepMillis = ThreadLocalRandom.current().nextInt(randomMillis) + minSpinMillis;
         TimeUnit.MILLISECONDS.sleep(sleepMillis);
     }
 }
