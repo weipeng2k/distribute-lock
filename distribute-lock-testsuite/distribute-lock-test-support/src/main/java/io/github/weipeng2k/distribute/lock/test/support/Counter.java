@@ -17,7 +17,7 @@ public class Counter {
     }
 
     public static void main(String[] args) {
-        Counter counter = new Counter("1.117.164.80", 6379);
+        Counter counter = new Counter("1.117.164.80", 6380);
         counter.init();
     }
 
